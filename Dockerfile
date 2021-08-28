@@ -1,14 +1,18 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jdk-alpine as builder
 
-VOLUME /tmp
-
-EXPOSE 8080
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
+COPY src src
 
 RUN chmod +x ./gradlew
-RUN ./gradlew -DskipTests=true build
+RUN ./gradlew bootjar
 
-ARG JAR_FILE=build/libs/springboot-sample-app-0.0.1-SNAPSHOT.jar
+FROM openjdk:8-jdk-alpine
 
-ADD ${JAR_FILE} springboot-sample-app.jar
+COPY --from=builder build/libs/*.jar springboot-sample-app.jar
+VOLUME /tmp
+EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "/springboot-sample-app.jar"]
