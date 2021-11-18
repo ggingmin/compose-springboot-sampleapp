@@ -6,7 +6,7 @@
   </a>
 </p>
 
-> The Asynchronous API has been implemented using Docker Compose, Spring Boot, Gradle, and MariaDB.
+> The Spring Boot API has been implemented using Docker Compose, Spring Boot, Gradle, and MariaDB.
 
 ## Usage
 
