@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  mariadb:
+    container_name: mariadb2
+    image: mariadb:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: testdb
+    restart: always
+    volumes:
+      - db_data:/var/lib/mysql
+
+  spring:
+    container_name: spring
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      MARIADB_ADDRESS: mariadb
+      MARIADB_USERNAME: root
+      MARIADB_PASSWORD: root
+    ports:
+      - "8080:8080"
+    restart: always
+    depends_on:
+      - mariadb
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      
+volumes:
+  db_data:
